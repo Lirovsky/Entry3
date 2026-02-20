@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoria de Precificação • Clínica Experts</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <main class="app">
+
+        <!-- AUDITORIA (wizard) -->
+        <section class="view is-active" data-view="audit" aria-hidden="false">
+            <header class="auditHero" role="banner">
+                <div class="auditHero__inner">
+                    <h1 class="auditHero__title">Auditoria de Precificação</h1>
+                    <div class="auditHero__subtitle">Você tem <strong>Lucro</strong> ou <strong>Ilusão</strong>?</div>
+                    <p class="auditHero__desc">Descubra a margem real do seu principal procedimento e o preço exato que
+                        você
+                        deveria cobrar.</p>
+                </div>
+            </header>
+
+            <div class="auditBody">
+                <div class="auditBody__inner">
+                    <div class="auditStepperWrap" aria-label="Progresso">
+                        <ol class="auditStepper" id="auditStepper">
+                            <li class="auditStep is-current" data-step="1" data-num="1">
+                                <span class="auditStep__dot">1</span>
+                                <span class="auditStep__label">Custo Fixo</span>
+                            </li>
+                            <li class="auditStep is-upcoming" data-step="2" data-num="2">
+                                <span class="auditStep__dot">2</span>
+                                <span class="auditStep__label">Procedimento</span>
+                            </li>
+                            <li class="auditStep is-upcoming" data-step="3" data-num="3">
+                                <span class="auditStep__dot">3</span>
+                                <span class="auditStep__label">Variáveis</span>
+                            </li>
+                            <li class="auditStep is-upcoming" data-step="4" data-num="4">
+                                <span class="auditStep__dot">4</span>
+                                <span class="auditStep__label">Resultado</span>
+                            </li>
+                        </ol>
+                        <div class="auditStepperLine" aria-hidden="true">
+                            <span class="auditStepperLine__fill" id="auditStepperFill" style="width:0%"></span>
+                        </div>
+                    </div>
+
+                    <div class="auditCard" role="region" aria-label="Formulário da auditoria">
+                        <div class="logo-flex">
+                            <img src="logo.svg" class="auditCard__icon" id="auditStepIcon" aria-hidden="true" alt="">
+                            <div class="auditCard__head">
+                                <h2 class="auditCard__title" id="auditStepTitle">O Custo de Existir</h2>
+                            </div>
+                        </div>
+                        <p class="auditCard__desc" id="auditStepDesc">Antes de atender qualquer paciente, sua
+                            clínica já tem um
+                            custo por hora.</p>
+
+                        <form id="auditForm" novalidate>
+                            <!-- STEP 1 -->
+                            <div class="auditPane is-active" data-audit-step="1">
+                                <label class="field">
+                                    <span class="field__label">Custo Fixo Mensal aproximado da clínica</span>
+                                    <input class="input" id="fixedCostInput" inputmode="decimal"
+                                        placeholder="R$ 10.000,00" data-mask="money-int" />
+                                    <span class="field__hint">Aluguel, equipe fixa, luz, sistemas, marketing,
+                                        etc.</span>
+                                </label>
+
+                                <label class="field">
+                                    <span class="field__label">Quantas horas por mês a clínica fica aberta?</span>
+                                    <div class="inputSuffix">
+                                        <input class="input input--suffix" id="openHoursInput" inputmode="numeric"
+                                            placeholder="160" />
+                                    </div>
+                                </label>
+
+                                <div class="callout callout--warn" id="fixedCallout" hidden>
+                                    <div class="callout__icon" aria-hidden="true">💡</div>
+                                    <div class="callout__content">
+                                        <div class="callout__title">O Pulo do Gato</div>
+                                        <div class="callout__text">
+                                            Antes de atender o primeiro paciente, sua clínica já custa <strong
+                                                id="fixedHourlyCost">R$ 0,00</strong>
+                                            por hora para estar aberta. Se você cobra menos que isso em procedimentos
+                                            rápidos, você está
+                                            pagando para trabalhar.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+                                <div class="actions actions--single">
+                                    <button class="btn btn--primary btn--lg btn--wide" id="auditNext1" type="button"
+                                        disabled>
+                                        Continuar para o Procedimento
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- STEP 2 -->
+                            <div class="auditPane" data-audit-step="2">
+                                <label class="field">
+                                    <span class="field__label">Nome do Procedimento</span>
+                                    <input class="input" id="procedureNameInput" placeholder="Ex.: botox" />
+                                </label>
+
+                                <label class="field">
+                                    <span class="field__label">Por quanto você vende esse procedimento hoje?</span>
+                                    <input class="input" id="procedurePriceInput" inputmode="decimal"
+                                        placeholder="R$ 1.500,00" data-mask="money-int" />
+                                </label>
+
+                                <label class="field">
+                                    <span class="field__label">Tempo de sala incluindo preparação e limpeza
+                                        (minutos)</span>
+                                    <div class="inputSuffix">
+                                        <input class="input input--suffix" id="procedureMinutesInput"
+                                            inputmode="numeric" placeholder="60" />
+                                    </div>
+                                </label>
+
+                                <div class="callout callout--warn" id="procedureCallout" hidden>
+                                    <div class="callout__icon" aria-hidden="true">💡</div>
+                                    <div class="callout__content">
+                                        <div class="callout__title">O Pulo do Gato</div>
+                                        <div class="callout__text">
+                                            Muitos esquecem o tempo de limpeza. Se o procedimento dura 45min, mas a sala
+                                            fica bloqueada por
+                                            1h,
+                                            o custo deve ser calculado sobre <strong><span
+                                                    id="procedureHoursRounded">1</span> hora</strong>
+                                            completa.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+                                <div class="actions">
+                                    <button class="btn btn-none" id="auditBack2" type="button">Voltar</button>
+                                    <button class="btn btn--primary btn--lg" id="auditNext2" type="button" disabled>
+                                        Continuar para Custos Variáveis
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3 -->
+                            <div class="auditPane" data-audit-step="3">
+                                <label class="field">
+                                    <span class="field__label">Impostos + Taxas de Cartão (%)</span>
+                                    <div class="inputSuffix">
+                                        <input class="input input--suffix" id="taxPctInput" inputmode="decimal"
+                                            placeholder="10" data-mask="percent" />
+                                    </div>
+                                    <span class="field__hint">Some a alíquota do Simples + taxa da maquininha</span>
+                                </label>
+
+                                <label class="field">
+                                    <span class="field__label">Comissão do Profissional que executa (%)</span>
+                                    <div class="inputSuffix">
+                                        <input class="input input--suffix" id="commissionPctInput" inputmode="decimal"
+                                            placeholder="30" data-mask="percent" />
+                                    </div>
+                                    <span class="field__hint">Percentual pago ao executor</span>
+                                </label>
+
+                                <label class="field">
+                                    <span class="field__label">Custo dos Insumos/Materiais (CMV)</span>
+                                    <input class="input" id="materialsCostInput" inputmode="decimal"
+                                        placeholder="R$ 100,00" data-mask="money-int" />
+                                    <span class="field__hint">Materiais descartáveis usados neste procedimento</span>
+                                </label>
+
+                                <div class="callout callout--warn" id="variablesCallout" hidden>
+                                    <div class="callout__icon" aria-hidden="true">💡</div>
+                                    <div class="callout__content">
+                                        <div class="callout__title">Cuidado com a Comissão sobre o Bruto</div>
+                                        <div class="callout__text">Se você paga comissão sobre o valor total, mas não
+                                            desconta imposto e
+                                            material antes, sua margem pode estar negativa sem você saber.</div>
+                                    </div>
+                                </div>
+
+                                <div class="divider"></div>
+                                <div class="actions">
+                                    <button class="btn btn-none" id="auditBack3" type="button">Voltar</button>
+                                    <button class="btn btn--primary btn--lg" id="auditToUnlock" type="button" disabled>
+                                        Calcular Minha Margem Real
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AWAIT -->
+        <section class="view" data-view="await" aria-hidden="true">
+            <div class="page page--await">
+                <div class="awaitCard">
+                    <div class="awaitSpinner" aria-hidden="true"></div>
+                    <div class="awaitTitle">Calculando sua margem real</div>
+                    <div class="awaitSub">Processando suas respostas…</div>
+                    <div class="awaitHint">Isso leva só alguns segundos.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULT -->
+        <section class="view" data-view="result" aria-hidden="true">
+            <div class="page page--resultAudit">
+                <div class="resultAuditWrap">
+                    <div class="resultAuditHeader">
+                        <h1 class="resultAuditTitle">Resultado da Auditoria</h1>
+                        <div class="resultAuditMeta"><span id="resProcName">procedimento</span> • <span
+                                id="resProcPrice">R$
+                                0,00</span></div>
+                    </div>
+
+                    <div class="statusCard" id="statusCard">
+                        <div class="statusCard__icon" aria-hidden="true">📈</div>
+                        <div class="statusCard__body">
+                            <div class="statusCard__title" id="statusTitle">Parabéns! Sua margem está saudável.</div>
+                            <div class="statusCard__text" id="statusText">Sua precificação está no caminho certo!
+                                Continue
+                                monitorando para manter essa margem saudável.</div>
+                        </div>
+                    </div>
+
+                    <div class="resultGrid">
+                        <div class="resultPanel">
+                            <div class="panelTitle">Onde vai cada Real?</div>
+                            <div class="donutWrap">
+                                <canvas id="donutChart" width="320" height="320"></canvas>
+                            </div>
+                            <div class="donutLegend" id="donutLegend"></div>
+                        </div>
+
+                        <div class="resultPanel">
+                            <div class="panelTitle">DRE Unitária</div>
+                            <div class="dre">
+                                <div class="dreRow">
+                                    <span>Receita Bruta</span>
+                                    <strong id="dreRevenue">R$ 0,00</strong>
+                                </div>
+                                <div class="dreRow">
+                                    <span>(-) Impostos/Taxas</span>
+                                    <span class="dreNeg" id="dreTaxes">-R$ 0,00</span>
+                                </div>
+                                <div class="dreRow">
+                                    <span>(-) Materiais (CMV)</span>
+                                    <span class="dreNeg" id="dreMaterials">-R$ 0,00</span>
+                                </div>
+                                <div class="dreRow">
+                                    <span>(-) Comissão</span>
+                                    <span class="dreNeg" id="dreCommission">-R$ 0,00</span>
+                                </div>
+
+                                <div class="dreRow dreRow--strong">
+                                    <span>= Margem de Contribuição</span>
+                                    <strong id="dreContribution">R$ 0,00</strong>
+                                </div>
+
+                                <div class="dreRow">
+                                    <span>(-) Custo Hora Clínica</span>
+                                    <span class="dreNeg" id="dreRoomCost">-R$ 0,00</span>
+                                </div>
+
+                                <div class="dreBox" id="dreNetBox">
+                                    <div class="dreBox__left">
+                                        <div class="dreBox__label">LUCRO LÍQUIDO<br />REAL</div>
+                                    </div>
+                                    <div class="dreBox__right">
+                                        <div class="dreBox__value" id="dreNetProfit">R$ 0,00</div>
+                                        <div class="dreBox__sub">Margem: <strong id="dreNetMargin">0%</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nextCard">
+                        <div class="nextCard__title">💡 E agora?</div>
+                        <p class="nextCard__text">Aumentar o preço assusta, eu sei. Mas existem formas de aumentar a
+                            <strong>percepção de valor</strong> (Branding) ou reduzir seu <strong>custo
+                                operacional</strong>
+                            (Eficiência) para atingir esse número sem perder vendas.
+                        </p>
+
+                        <div class="resultCtas" aria-label="Ações">
+                            <div class="ctaPair">
+                                <a class="btn btn--dark btn--lg btn--block" id="ctaTrialBtn"
+                                    href="https://app.clinicaexperts.com.br/signup">
+                                    Teste grátis
+                                </a>
+                                <button class="btn btn--purple btn--lg btn--block" id="ctaSpecialistBtn" type="button">
+                                    Fale com um especialista
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- THANK YOU -->
+        <section class="view" data-view="specialistThanks" aria-hidden="true">
+            <div class="page page--thanks">
+                <div class="thanksWrap">
+                    <div class="thanksTitle">Feito!</div>
+                    <div class="thanksSub">Em breve um dos nossos especialistas entrará em contato com você pelo
+                        WhatsApp.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL (desbloquear resultado) -->
+        <div class="modalOverlay" id="preResultModal" hidden aria-hidden="true">
+            <div class="modalCard modalCard--specialist" role="dialog" aria-modal="true"
+                aria-labelledby="preResultHeadingModal">
+
+                <form id="preResultFormShort" novalidate>
+                    <div class="leadTitle" id="preResultHeading">Para desbloquear seu resultado preencha as informações
+                        abaixo
+                    </div>
+
+                    <label class="field">
+                        <span class="field__label">Qual seu nome?</span>
+                        <input class="input" id="preNameInput" placeholder="Ex.: Ana Roberta" />
+                    </label>
+
+                    <label class="field">
+                        <span class="field__label">WhatsApp</span>
+                        <input class="input" id="prePhoneInput" inputmode="numeric" maxlength="11" pattern="[0-9]*"
+                            autocomplete="tel" placeholder="Ex.: 51999999999" />
+                    </label>
+
+                    <label class="field">
+                        <span class="field__label">E-mail</span>
+                        <input class="input" id="preEmailInput" inputmode="email"
+                            placeholder="Ex.: voce@clinica.com.br" />
+                    </label>
+
+                    <div class="divider"></div>
+
+                    <div class="actions">
+                        <button class="btn btn-none" id="preResultCancelBtn" type="button">Voltar</button>
+                        <button class="btn btn--primary" id="preResultSubmitBtn" type="submit" disabled>
+                            Receber resultado
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL (falar com especialista) -->
+        <div class="modalOverlay" id="specialistModal" hidden aria-hidden="true">
+            <div class="modalCard modalCard--specialist" role="dialog" aria-modal="true"
+                aria-labelledby="specialistHeading">
+
+                <div class="stepperModal-wrap">
+                    <ol class="stepperModal" aria-label="Progresso">
+                        <li class="stepModal is-current" data-index="1"><span class="step__circle">1</span></li>
+                        <li class="stepModal is-upcoming" data-index="2"><span class="step__circle">2</span></li>
+                        <li class="stepModal is-upcoming" data-index="3"><span class="step__circle">3</span></li>
+                    </ol>
+                </div>
+
+                <form id="specialistForm" novalidate>
+
+                    <!-- Etapa 1 -->
+                    <div class="qualifyStep is-active" data-qualify-step="1">
+                        <div class="leadTitle" id="specialistStepHeading">Para falar com o especialista preencha as
+                            informações
+                            abaixo</div>
+
+                        <label class="field">
+                            <span class="field__label">Qual desafio você busca resolver?</span>
+                            <select class="select" id="challengeInput">
+                                <option value="">Selecione</option>
+                                <option>Falta de organização na agenda e nos atendimentos</option>
+                                <option>Dificuldade para acompanhar o financeiro da clínica</option>
+                                <option>Falta de controle sobre comissões e repasses</option>
+                                <option>Gestão confusa de estoque e consumo de produtos</option>
+                                <option>Perda de tempo digitando anotações durante e após os atendimentos</option>
+                                <option>Perda de tempo com papelada e assinaturas manuais</option>
+                                <option>Dificuldade em responder pacientes fora do horário ou em grande volume de
+                                    mensagens</option>
+                                <option>Envio de lembretes e confirmações pelo WhatsApp</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            <span class="field__label">Quantas pessoas terão acesso ao sistema?</span>
+                            <select class="select" id="teamSizeInput">
+                                <option value="">Selecione</option>
+                                <option>Somente eu</option>
+                                <option>Eu e mais uma pessoa</option>
+                                <option>De 3 a 5 pessoas</option>
+                                <option>De 6 a 10 pessoas</option>
+                                <option>Mais de 10 pessoas</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            <span class="field__label">Você já utiliza algum sistema de gestão?</span>
+                            <select class="select" id="usesSystemInput">
+                                <option value="">Selecione</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
+                        </label>
+
+                        <div class="divider"></div>
+
+                        <div class="actions">
+                            <button class="btn btn-none" id="qualifyCancelBtn" type="button">Voltar</button>
+                            <button class="btn btn--primary" id="qualifyNextBtn" type="button" disabled>
+                                Avançar <span class="btn__arrow" aria-hidden="true">→</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 2 -->
+                    <div class="qualifyStep" data-qualify-step="2">
+                        <div class="leadTitle">Só mais algumas perguntas</div>
+
+                        <label class="field">
+                            <span class="field__label">Qual sua área de atuação?</span>
+                            <select class="select" id="areaInput">
+                                <option value="">Selecione</option>
+                                <option>Estética</option>
+                                <option>Medicina</option>
+                                <option>Biomedicina</option>
+                                <option>Odontologia</option>
+                                <option>Fisioterapia</option>
+                                <option>Psicologia</option>
+                                <option>Nutrição</option>
+                                <option>Podologia</option>
+                                <option>Massoterapia</option>
+                                <option>Micropigmentação</option>
+                                <option>Microblading</option>
+                                <option>Depilação</option>
+                                <option>Lash Designer</option>
+                                <option>Manicure/Pedicure</option>
+                                <option>Salão de beleza</option>
+                                <option>Outra</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            <span class="field__label">Você já é assinante do Clínica Experts?</span>
+                            <select class="select" id="subscriberInput">
+                                <option value="">Selecione</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
+                        </label>
+
+                        <label class="field">
+                            <span class="field__label">Os planos do Clínica Experts iniciam em 12x de R$199. Esse
+                                investimento faz
+                                sentido para você neste momento?</span>
+                            <select class="select" id="investmentOkInput">
+                                <option value="">Selecione</option>
+                                <option>Sim</option>
+                                <option>Não</option>
+                            </select>
+                        </label>
+
+                        <div class="divider"></div>
+
+                        <div class="actions">
+                            <button class="btn btn-none" id="qualifyBackBtn" type="button">Voltar</button>
+                            <button class="btn btn--primary" id="qualifyNextBtn2" type="button" disabled>
+                                Avançar <span class="btn__arrow" aria-hidden="true">→</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Etapa 3 -->
+                    <div class="qualifyStep" data-qualify-step="3">
+                        <label class="field">
+                            <span class="field__label">Seu nome</span>
+                            <input class="input" id="nameInput" placeholder="Ex.: Ana Roberta" />
+                        </label>
+
+                        <label class="field">
+                            <span class="field__label">WhatsApp</span>
+                            <input class="input" id="phoneInput" inputmode="numeric" maxlength="11" pattern="[0-9]*"
+                                autocomplete="tel" placeholder="Ex.: 51999999999" />
+                        </label>
+
+                        <label class="field">
+                            <span class="field__label">E-mail</span>
+                            <input class="input" id="emailInput" inputmode="email"
+                                placeholder="Ex.: voce@clinica.com.br" />
+                        </label>
+
+                        <div class="divider"></div>
+
+                        <div class="actions">
+                            <button class="btn btn-none" id="qualifyBackBtn3" type="button">Voltar</button>
+                            <button class="btn btn--primary" id="qualifySubmitBtn" type="submit" disabled>
+                                Receber mensagem <span class="btn__arrow" aria-hidden="true">→</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Chart.js (Donut) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

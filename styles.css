@@ -1,0 +1,2103 @@
+/* styles.css */
+
+:root {
+    --black: #1D1D1D;
+    --bg: #ECEBE9;
+    --neutral-50: #9A9998;
+    --neutral-40: #AFAEAD;
+    --neutral-30: #C3C2C0;
+
+    --brand-purple: #AF47FF;
+    --brand-blue: #77BAFE;
+    --brand-green: #E5FFC9;
+
+    --accent-purple: #B39DED;
+    --accent-blue: #9AC8EF;
+    --accent-green: #00C3A5;
+
+    --card: #FFFFFF;
+    --stroke: rgba(29, 29, 29, 0.10);
+    --shadow: 0 24px 60px rgba(29, 29, 29, 0.10);
+    --radius-lg: 34px;
+    --radius-md: 22px;
+    --radius-sm: 14px;
+
+    --page-max: 1240px;
+
+    --field-border: rgba(29, 29, 29, .26);
+    --field-border-focus: rgba(29, 29, 29, .58);
+
+    /* Auditoria (novo) */
+    --navy-900: #0b1d3a;
+    --navy-800: #102a55;
+    --navy-700: #17376e;
+    --orange-600: #f97316;
+    --orange-100: rgba(249, 115, 22, .12);
+    --blue-100: rgba(59, 130, 246, .10);
+    --green-600: #16a34a;
+    --green-100: rgba(22, 163, 74, .10);
+    --red-600: #dc2626;
+    --red-100: rgba(220, 38, 38, .10);
+}
+
+@font-face {
+    font-family: "Inter Variable";
+    src: url("./font/InterVariable.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter Variable";
+    color: var(--black);
+    background: var(--bg);
+}
+
+.app {
+    min-height: 100vh;
+    position: relative;
+    isolation: isolate;
+}
+
+.app::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(900px 520px at 82% 14%, rgba(0, 195, 165, .18) 0%, rgba(0, 195, 165, 0) 62%),
+        radial-gradient(820px 520px at 96% 30%, rgba(229, 255, 201, .70) 0%, rgba(229, 255, 201, 0) 64%),
+        radial-gradient(720px 520px at 78% 42%, rgba(154, 200, 239, .36) 0%, rgba(154, 200, 239, 0) 66%),
+        radial-gradient(620px 420px at 64% 34%, rgba(179, 157, 237, .26) 0%, rgba(179, 157, 237, 0) 70%),
+        radial-gradient(1200px 720px at 10% 10%, rgba(255, 255, 255, .75) 0%, rgba(255, 255, 255, 0) 62%);
+    filter: blur(18px);
+    opacity: .95;
+}
+
+/* =========================================================
+   BASE LAYOUT
+========================================================= */
+
+.view {
+    display: none;
+}
+
+.view.is-active {
+    display: block;
+}
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page--wide {
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+.page--hero {
+    align-items: center;
+    padding-top: 42px;
+}
+
+.page--result {
+    align-items: center;
+    padding-top: 42px;
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn {
+    border: 0;
+    border-radius: 10px;
+    padding: 16px 18px 14px;
+    font-weight: 750;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    user-select: none;
+    text-decoration: none;
+}
+
+.btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn--sm {
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    font-size: 13px;
+}
+
+.btn--lg {
+    height: 54px;
+    padding: 0 20px;
+    font-size: 15px;
+}
+
+.btn--primary {
+    background: var(--black);
+    color: #fff;
+    box-shadow: 0 16px 40px rgba(29, 29, 29, .20);
+}
+
+.btn--primary:hover {
+    background: #232323;
+}
+
+.btn--purple {
+    background: var(--brand-purple);
+    color: #fff;
+    box-shadow: 0 16px 40px rgba(175, 71, 255, .22);
+}
+
+.btn--purple:hover {
+    background: #b861fa;
+}
+
+.btn--outline {
+    background: rgba(255, 255, 255, .86);
+    border: 1px solid rgba(29, 29, 29, .14);
+    color: var(--black);
+}
+
+.btn--ghost {
+    background: rgba(255, 255, 255, .56);
+    border: 1px solid rgba(29, 29, 29, .12);
+    color: rgba(29, 29, 29, .92);
+}
+
+.btn--link {
+    background: transparent;
+    color: rgba(29, 29, 29, .78);
+    padding: 12px 8px;
+    border-radius: 12px;
+}
+
+.btn--block {
+    width: 100%;
+}
+
+.btn__arrow {
+    font-weight: 900;
+    margin-bottom: 3px;
+}
+
+.btn-none {
+    background: none;
+    border: none;
+    color: rgba(29, 29, 29, .78);
+    padding: 12px 8px;
+    border-radius: 12px;
+}
+
+/* =========================================================
+   HERO (antigo)
+========================================================= */
+
+.heroSplit {
+    width: 100%;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 44px;
+    align-items: center;
+}
+
+.heroSplit--center {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+}
+
+.heroSplit--center .heroCopy {
+    max-width: 720px;
+}
+
+.heroSplit--center .heroSub {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.heroSplit--center .heroCtas {
+    justify-content: center;
+}
+
+.heroSplit--center .heroMeta {
+    align-items: center;
+}
+
+.heroKicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(29, 29, 29, .78);
+    font-weight: 650;
+    font-size: 14px;
+}
+
+.heroKicker__spark {
+    width: 26px;
+    height: 26px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .65);
+    border: 1px solid rgba(29, 29, 29, .08);
+    display: grid;
+    place-items: center;
+}
+
+.heroTitle {
+    margin: 14px 0 0;
+    font-size: clamp(44px, 4.8vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+}
+
+.heroTitle__muted {
+    color: rgba(29, 29, 29, .28);
+    font-weight: 500;
+}
+
+.heroTitle__strong {
+    color: var(--black);
+    font-weight: 850;
+}
+
+.heroDesc {
+    margin: 14px 0 0;
+    font-size: 18px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 600;
+}
+
+.heroSub {
+    margin: 10px 0 0;
+    color: rgba(29, 29, 29, .52);
+    line-height: 1.55;
+    max-width: 520px;
+}
+
+.heroCtas {
+    margin-top: 26px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.heroMeta {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: rgba(29, 29, 29, .62);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.heroMeta__muted {
+    color: rgba(29, 29, 29, .50);
+}
+
+/* =========================================================
+   STEPPER (base)
+========================================================= */
+
+.stepper-wrap {
+    width: 100%;
+    margin-bottom: 0;
+    justify-content: center;
+}
+
+.stepper {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.step__circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-weight: 850;
+    font-size: 13px;
+    border: 1px solid rgba(29, 29, 29, .12);
+    background: rgba(255, 255, 255, .60);
+    color: rgba(29, 29, 29, .55);
+}
+
+.step__label {
+    font-size: 11px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 650;
+}
+
+.step.is-current .step__circle {
+    background: var(--black);
+    color: #fff;
+    border-color: rgba(29, 29, 29, .22);
+}
+
+.step.is-complete .step__circle {
+    background: rgba(0, 195, 165, .95);
+    color: #08211c;
+    border-color: rgba(0, 195, 165, .30);
+}
+
+/* =========================================================
+   CARD / FORM BASE
+========================================================= */
+
+.card {
+    width: min(720px, 100%);
+    background: var(--card);
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 36px 34px;
+}
+
+.card__tag {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .10em;
+    margin-bottom: 10px;
+    color: rgba(0, 195, 165, .95);
+}
+
+.card__title {
+    margin: 0;
+    text-align: center;
+    font-size: 34px;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+}
+
+.card__subtitle {
+    margin: 10px 0 22px;
+    text-align: center;
+    color: rgba(29, 29, 29, .55);
+}
+
+/* Fields */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 32px;
+}
+
+.field__label {
+    font-size: 14px;
+    color: rgba(29, 29, 29, .88);
+    line-height: 1.35;
+    font-weight: 500;
+}
+
+.input,
+.select {
+    width: 100%;
+    height: 52px;
+    border-radius: 14px;
+    border: 0.75px solid var(--field-border);
+    background: #fff;
+    padding: 0 16px;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(29, 29, 29, .90);
+}
+
+.input::placeholder {
+    color: rgba(154, 153, 152, .85);
+}
+
+.input:focus,
+.select:focus {
+    border-color: var(--field-border-focus);
+    box-shadow: none;
+}
+
+/* Select chevron */
+select.input,
+select.select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 46px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%239A9998' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+}
+
+/* Input row with suffix (%, horas, minutos etc.) */
+.inputRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 10px;
+}
+
+.inputRow__suffix {
+    font-size: 13px;
+    font-weight: 650;
+    color: rgba(29, 29, 29, .55);
+    padding-right: 2px;
+}
+
+/* Money wrapper (se usar) */
+.money {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid rgba(29, 29, 29, .14);
+    background: #fff;
+    padding: 0 16px;
+}
+
+.money__prefix {
+    font-weight: 600;
+    color: rgba(29, 29, 29, .55);
+}
+
+.input--money {
+    border: 0;
+    background: transparent;
+    box-shadow: none !important;
+    padding: 0;
+    height: 40px;
+}
+
+/* Callout */
+.callout {
+    margin-top: 16px;
+    border-radius: 16px;
+    padding: 14px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border: 1px solid rgba(29, 29, 29, .10);
+    background: rgba(255, 255, 255, .85);
+}
+
+.callout__icon {
+    width: 22px;
+    text-align: center;
+}
+
+.callout__content {
+    color: rgba(255, 255, 255);
+    line-height: 1.5;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.callout__title {
+    font-weight: 750;
+    color: rgba(255, 255, 255);
+    margin-bottom: 2px;
+}
+
+.callout--tip {
+    background: var(--blue-100);
+    border-color: rgba(59, 130, 246, .18);
+}
+
+.callout--warn {
+    background: var(--accent-green);
+    border-color: rgba(249, 115, 22, .22);
+}
+
+.callout--danger {
+    background: var(--red-100);
+    border-color: rgba(220, 38, 38, .20);
+}
+
+.divider {
+    margin: 18px 0;
+    height: 1px;
+    width: 100%;
+    background: rgba(29, 29, 29, .10);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.fineprint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 600;
+}
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+/* IMPORTANT: garante hidden funcionando sempre */
+[hidden] {
+    display: none !important;
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(29, 29, 29, .62);
+    display: grid;
+    place-items: center;
+    padding: 22px;
+}
+
+.modalOverlay[hidden] {
+    display: none !important;
+}
+
+.modalCard {
+    width: min(560px, 100%);
+    background: #fff;
+    border-radius: 40px;
+    padding: 28px 28px 24px;
+    box-shadow: 0 36px 90px rgba(0, 0, 0, .35);
+}
+
+.modalHeader {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    gap: 12px;
+}
+
+.modalHeader__spacer {
+    width: 44px;
+    height: 44px;
+}
+
+.modalLogo {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+    background: var(--black);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    text-transform: lowercase;
+}
+
+/* Popup steps */
+.qualifyStep {
+    display: none;
+}
+
+.qualifyStep.is-active {
+    display: block;
+}
+
+/* Stepper (modal) */
+.stepperModal-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.stepperModal {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.stepModal.is-current .step__circle {
+    background: var(--black);
+    color: #fff;
+    border-color: rgba(29, 29, 29, .22);
+}
+
+.stepModal.is-complete .step__circle {
+    background: rgba(0, 195, 165, .95);
+    color: #08211c;
+    border-color: rgba(0, 195, 165, .30);
+}
+
+/* Lead steps */
+.leadStep {
+    display: none;
+}
+
+.leadStep.is-active {
+    display: block;
+}
+
+.leadTitle {
+    margin: 36px 0 10px;
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* Radios como checkbox quadrado */
+.radioRow {
+    display: flex;
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.radioPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding: 2px 0;
+    color: rgba(29, 29, 29, .82);
+    font-weight: 650;
+}
+
+.radioPill span {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.radioPill input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid rgba(154, 153, 152, .55);
+    background: #fff;
+    display: inline-block;
+    position: relative;
+}
+
+.radioPill input:checked {
+    border-color: var(--black);
+    background: var(--black);
+}
+
+.radioPill input:checked::after {
+    content: "";
+    position: absolute;
+    border: solid #fff;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 10px;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
+}
+
+/* Phone field */
+.phone {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid rgba(29, 29, 29, .14);
+    background: #fff;
+    overflow: hidden;
+}
+
+.phone__prefix {
+    height: 100%;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid rgba(29, 29, 29, .10);
+    color: rgba(29, 29, 29, .70);
+    font-weight: 750;
+}
+
+.input--phone {
+    border: 0;
+    height: 50px;
+    border-radius: 0;
+}
+
+/* =========================================================
+   CUSTOM SELECT
+========================================================= */
+
+.select--nativeHidden {
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.customSelect {
+    position: relative;
+    width: 100%;
+}
+
+.customSelect__button {
+    width: 100%;
+    height: 52px;
+    border-radius: 14px;
+    border: 0.75px solid var(--field-border);
+    background: #fff;
+    padding: 0 46px 0 16px;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(29, 29, 29, .90);
+    text-align: left;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%239A9998' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+}
+
+.customSelect__button[data-has-value="0"] {
+    color: rgba(154, 153, 152, .85);
+    font-weight: 400;
+}
+
+.customSelect__button:focus {
+    border-color: var(--field-border-focus);
+    box-shadow: none;
+}
+
+.customSelect__menu {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
+    width: 100%;
+    background: #fff;
+    border: 0.75px solid var(--field-border);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(29, 29, 29, 0.12);
+    padding: 6px;
+    display: none;
+    z-index: 20;
+    max-height: min(200px, 38vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.customSelect.is-open .customSelect__menu {
+    display: block;
+}
+
+.customSelect.is-open-up .customSelect__menu {
+    top: auto;
+    bottom: calc(100% + 8px);
+}
+
+.customSelect__option {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(29, 29, 29, .92);
+}
+
+.customSelect__option:hover,
+.customSelect__option:focus {
+    outline: none;
+    background: rgba(119, 186, 254, .18);
+}
+
+.customSelect__option.is-selected {
+    background: var(--accent-green);
+    color: #fff;
+}
+
+.customSelect__option[data-placeholder="1"] {
+    color: rgba(29, 29, 29, .55);
+    font-weight: 650;
+}
+
+/* =========================================================
+   RESULT (base antigo)
+========================================================= */
+
+.resultCtas {
+    width: min(680px, 100%);
+    display: flex;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.resultCtas>* {
+    flex: 1;
+}
+
+@media (max-width: 620px) {
+    .resultCtas {
+        flex-direction: column;
+    }
+}
+
+.resultWrap {
+    width: min(720px, 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding-top: 0;
+}
+
+.result__kicker {
+    margin: 0;
+    color: rgba(29, 29, 29, .55);
+    font-size: 13px;
+    text-align: center;
+    font-weight: 650;
+}
+
+.result__money {
+    font-weight: 900;
+    font-size: clamp(52px, 6vw, 76px);
+    letter-spacing: -0.03em;
+    color: rgba(29, 29, 29, .92);
+}
+
+.result__per {
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(29, 29, 29, .52);
+    text-align: center;
+    font-weight: 650;
+}
+
+.resultCard {
+    width: min(680px, 100%);
+    background: #fff;
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 22px;
+    box-shadow: 0 18px 50px rgba(29, 29, 29, .10);
+    padding: 18px;
+}
+
+.resultCard__top {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(29, 29, 29, .70);
+    font-weight: 650;
+}
+
+.resultCard__grid {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 720px) {
+    .resultCard__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mini {
+    background: rgba(236, 235, 233, .55);
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 16px;
+    padding: 14px 12px;
+    text-align: center;
+}
+
+.mini__label {
+    font-size: 11px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 650;
+}
+
+.mini__big {
+    margin-top: 8px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 18px;
+}
+
+.mini__sub {
+    margin-top: 4px;
+    font-size: 11px;
+    color: rgba(29, 29, 29, .50);
+    font-weight: 650;
+}
+
+.block {
+    width: min(680px, 100%);
+    border-radius: 22px;
+    padding: 18px;
+}
+
+.block--dark {
+    background: rgba(29, 29, 29, .92);
+    color: rgba(255, 255, 255, .92);
+    border: 1px solid rgba(29, 29, 29, .30);
+}
+
+.block__title {
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.block__text {
+    font-size: 12px;
+    line-height: 1.55;
+    opacity: .95;
+}
+
+/* =========================================================
+   AWAIT
+========================================================= */
+
+.page--await {
+    padding-left: 22px;
+    padding-right: 22px;
+    padding-top: 42px;
+}
+
+.awaitCard {
+    width: min(560px, 100%);
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(29, 29, 29, .10);
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+.awaitSpinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 3px solid rgba(29, 29, 29, .12);
+    border-top-color: rgba(29, 29, 29, .82);
+    animation: spin 0.9s linear infinite;
+    margin-bottom: 6px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.awaitTitle {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: rgba(29, 29, 29, .90);
+}
+
+.awaitSub {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(29, 29, 29, .62);
+    line-height: 1.45;
+    min-height: 2.2em;
+}
+
+.awaitHint {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(29, 29, 29, .50);
+}
+
+/* =========================================================
+   FORM COMO PÁGINA
+========================================================= */
+
+.page--form {
+    padding-top: 42px;
+    padding-bottom: 42px;
+    align-items: flex-start;
+    /* importante pro layout do audit */
+}
+
+.formCard {
+    width: min(720px, 100%);
+    background: #fff;
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 40px;
+    padding: 28px 28px 24px;
+    box-shadow: var(--shadow);
+}
+
+.formHeader {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Stepper mini (mobile pequeno) */
+.stepperMini {
+    display: none;
+}
+
+@media (max-width: 430px) {
+    .stepper-wrap {
+        display: none;
+    }
+
+    .stepperMini {
+        display: grid;
+        gap: 8px;
+        align-items: center;
+        justify-items: center;
+    }
+
+    .stepperMini__top {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .stepperMini__text {
+        font-size: 13px;
+        font-weight: 700;
+        color: rgba(29, 29, 29, .78);
+        letter-spacing: -0.01em;
+    }
+
+    .stepperMini__bar {
+        width: 100%;
+        height: 10px;
+        background: rgba(29, 29, 29, .08);
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .stepperMini__fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--accent, #00C2A8);
+        width: 16.66%;
+        transition: width .25s ease;
+    }
+}
+
+/* Compactar dentro do modal */
+.modalCard .leadTitle {
+    margin: 8px 0 8px;
+    font-size: 26px;
+    line-height: 1.15;
+}
+
+.modalCard .field {
+    margin-top: 18px;
+    gap: 8px;
+}
+
+.modalCard .divider {
+    margin: 14px 0;
+}
+
+/* =========================================================
+   THANKS
+========================================================= */
+
+.page--thanks {
+    padding-left: 22px;
+    padding-right: 22px;
+    padding-top: 42px;
+}
+
+.thanksWrap {
+    width: min(760px, 100%);
+    text-align: center;
+}
+
+.thanksTitle {
+    font-size: clamp(44px, 6vw, 64px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+}
+
+.thanksSub {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(29, 29, 29, .55);
+    line-height: 1.55;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+input,
+select,
+button {
+    font-size: 16px;
+}
+
+.modalOverlay {
+    padding: 16px;
+    align-items: center;
+}
+
+.modalCard {
+    width: min(560px, 100%);
+    max-height: calc(100vh - 32px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 860px) {
+
+    .page--hero,
+    .page--result {
+        padding-top: 28px;
+    }
+
+    .heroTitle {
+        font-size: clamp(34px, 7vw, 52px);
+    }
+
+    .heroDesc {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .page--wide,
+    .page--result {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .modalOverlay {
+        padding: 12px;
+        place-items: center;
+    }
+
+    .modalCard {
+        border-radius: 26px;
+        padding: 18px 16px 16px;
+        max-height: calc(100vh - 24px);
+    }
+
+    .modalHeader {
+        grid-template-columns: 40px 1fr 40px;
+        gap: 10px;
+    }
+
+    .modalLogo,
+    .modalHeader__spacer {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stepper {
+        gap: 8px;
+    }
+
+    .step__circle {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .leadTitle {
+        margin: 22px 0 8px;
+        font-size: 22px;
+        line-height: 1.15;
+    }
+
+    .field {
+        margin-top: 18px;
+        gap: 8px;
+    }
+
+    .field__label {
+        font-size: 13px;
+    }
+
+    .input,
+    .select,
+    .customSelect__button {
+        height: 48px;
+        border-radius: 12px;
+    }
+
+    .radioRow {
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+    }
+
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .actions .btn {
+        width: 100%;
+    }
+
+    .resultWrap {
+        gap: 12px;
+    }
+
+    .resultCard {
+        padding: 14px;
+    }
+
+    .block {
+        padding: 14px;
+    }
+}
+
+@media (max-height: 700px) {
+    .modalCard {
+        max-height: calc(100vh - 24px);
+    }
+}
+
+/* =========================================================
+   AUDITORIA DE PRECIFICAÇÃO (NOVO LAYOUT)
+   - pode usar essas classes no novo index
+========================================================= */
+
+/* Hero azul fixo no topo */
+.auditHero {
+    background: radial-gradient(1200px 600px at 70% 20%, rgba(255, 255, 255, .10) 0%, rgba(255, 255, 255, 0) 55%),
+        linear-gradient(180deg, var(--navy-800), var(--navy-900));
+    color: rgba(255, 255, 255, .92);
+    padding: 54px 22px 46px;
+    text-align: center;
+}
+
+.auditHero__inner {
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.auditHero__title {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    font-size: clamp(34px, 4.5vw, 56px);
+    line-height: 1.05;
+    color: #fff;
+}
+
+.auditHero__subtitle {
+    margin-top: 10px;
+    font-weight: 650;
+    color: rgba(255, 255, 255, .92);
+}
+
+.auditHero__desc {
+    margin: 10px auto 0;
+    max-width: 780px;
+    color: rgba(255, 255, 255, .75);
+    font-weight: 600;
+    line-height: 1.55;
+    font-size: 13px;
+}
+
+/* Wrapper abaixo do hero */
+.auditMain {
+    padding: 34px 22px 56px;
+    display: flex;
+    justify-content: center;
+}
+
+.auditMain__inner {
+    width: min(820px, 100%);
+}
+
+/* Stepper com linha (para 4 etapas) */
+.stepper.stepper--line {
+    gap: 0;
+    flex-wrap: nowrap;
+}
+
+.stepper.stepper--line .step {
+    position: relative;
+    padding: 0 26px;
+}
+
+.stepper.stepper--line .step::before,
+.stepper.stepper--line .step::after {
+    content: "";
+    position: absolute;
+    top: 17px;
+    height: 2px;
+    width: 26px;
+    background: rgba(29, 29, 29, .10);
+}
+
+.stepper.stepper--line .step::before {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.stepper.stepper--line .step::after {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.stepper.stepper--line .step:first-child::before,
+.stepper.stepper--line .step:last-child::after {
+    display: none;
+}
+
+.stepper.stepper--line .step.is-complete::after {
+    background: rgba(22, 163, 74, .85);
+}
+
+.stepper.stepper--line .step.is-complete+.step::before {
+    background: rgba(22, 163, 74, .85);
+}
+
+/* Card da auditoria (ícone centralizado) */
+.logo-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auditCard {
+    width: min(720px, 100%);
+    margin: 30px auto;
+    background: #fff;
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    padding: 28px 28px 22px;
+}
+
+.auditCard__icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: var(--navy-900);
+    display: grid;
+    place-items: center;
+    margin: 0 auto 12px;
+    color: #fff;
+}
+
+.auditCard__title {
+    margin: 0;
+    text-align: center;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+}
+
+.auditCard__sub {
+    margin: 10px auto 0;
+    max-width: 560px;
+    text-align: center;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 600;
+    line-height: 1.55;
+    font-size: 13px;
+}
+
+/* Hint box (Pulo do Gato) */
+.tipBox {
+    margin-top: 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(249, 115, 22, .22);
+    background: var(--orange-100);
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.tipBox__icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 10px;
+    background: rgba(249, 115, 22, .20);
+    display: grid;
+    place-items: center;
+    color: var(--orange-600);
+    font-weight: 900;
+}
+
+.tipBox__body {
+    line-height: 1.5;
+}
+
+.tipBox__title {
+    font-weight: 800;
+    color: rgba(29, 29, 29, .85);
+    font-size: 13px;
+}
+
+.tipBox__text {
+    margin-top: 4px;
+    font-weight: 600;
+    color: rgba(29, 29, 29, .62);
+    font-size: 12px;
+}
+
+/* Resultado auditoria (grid donut + DRE) */
+.auditResultHeader {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.auditResultHeader__title {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+}
+
+.auditResultHeader__sub {
+    margin-top: 8px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 650;
+    font-size: 13px;
+}
+
+.statusCard {
+    width: min(900px, 100%);
+    margin: 0 auto 18px;
+    border-radius: 18px;
+    border: 1px solid rgba(29, 29, 29, .10);
+    background: rgba(255, 255, 255, .92);
+    padding: 16px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.statusCard__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+}
+
+.statusCard__body {
+    flex: 1;
+}
+
+.statusCard__title {
+    font-weight: 800;
+    margin: 0;
+}
+
+.statusCard__text {
+    margin: 6px 0 0;
+    font-weight: 600;
+    color: rgba(29, 29, 29, .62);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.status--good {
+    border-color: rgba(22, 163, 74, .20);
+    background: var(--green-100);
+}
+
+.status--good .statusCard__icon {
+    background: rgba(22, 163, 74, .18);
+    color: var(--green-600);
+}
+
+.status--warn {
+    border-color: rgba(249, 115, 22, .22);
+    background: var(--orange-100);
+}
+
+.status--warn .statusCard__icon {
+    background: rgba(249, 115, 22, .18);
+    color: var(--orange-600);
+}
+
+.status--bad {
+    border-color: rgba(220, 38, 38, .20);
+    background: var(--red-100);
+}
+
+.status--bad .statusCard__icon {
+    background: rgba(220, 38, 38, .16);
+    color: var(--red-600);
+}
+
+.auditResultGrid {
+    width: min(900px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 860px) {
+    .auditResultGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(29, 29, 29, .08);
+    padding: 16px 16px;
+}
+
+.panel__title {
+    margin: 0 0 12px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.donutWrap {
+    position: relative;
+    height: 260px;
+    /* Chart.js precisa de altura */
+}
+
+#donutChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.donutLegend {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.donutLegend__item {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 650;
+    color: rgba(29, 29, 29, .72);
+}
+
+.donutLegend__swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+}
+
+.donutLegend__pct {
+    color: rgba(29, 29, 29, .55);
+    font-weight: 750;
+}
+
+.dre {
+    display: grid;
+    gap: 10px;
+}
+
+.dreRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 13px;
+    font-weight: 650;
+    color: rgba(29, 29, 29, .72);
+}
+
+.dreRow__value {
+    font-weight: 800;
+    color: rgba(29, 29, 29, .90);
+}
+
+.dreDivider {
+    height: 1px;
+    background: rgba(29, 29, 29, .10);
+    margin: 6px 0;
+}
+
+.dreHighlight {
+    border-radius: 14px;
+    border: 1px solid rgba(29, 29, 29, .10);
+    background: rgba(236, 235, 233, .55);
+    padding: 12px;
+}
+
+.dreHighlight__top {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.dreHighlight__title {
+    font-weight: 900;
+    letter-spacing: -0.01em;
+}
+
+.dreHighlight__value {
+    font-weight: 900;
+    color: rgba(29, 29, 29, .92);
+}
+
+.dreProfitBox {
+    margin-top: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(22, 163, 74, .18);
+    background: var(--green-100);
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.dreProfitBox__label {
+    font-weight: 900;
+}
+
+.dreProfitBox__value {
+    font-weight: 900;
+    color: var(--green-600);
+}
+
+.dreProfitBox__sub {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(29, 29, 29, .55);
+}
+
+/* Ações do resultado (simular + especialista) */
+.auditResultActions {
+    width: min(900px, 100%);
+    margin: 18px auto 0;
+    display: flex;
+    gap: 12px;
+}
+
+.auditResultActions>* {
+    flex: 1;
+}
+
+@media (max-width: 620px) {
+    .auditResultActions {
+        flex-direction: column;
+    }
+}
+
+/* Ajustes finos de alinhamento */
+@media (max-width: 560px) {
+    .auditHero {
+        padding: 42px 16px 36px;
+    }
+
+    .auditMain {
+        padding: 22px 16px 44px;
+    }
+
+    .auditCard {
+        padding: 20px 16px 16px;
+    }
+
+    .auditCard__title {
+        font-size: 22px;
+    }
+}
+
+
+/* =========================================================
+   AUDIT STEPPER + ETAPAS (audit view)
+========================================================= */
+
+/* Stepper da auditoria (4 passos: 3 etapas + resultado) */
+.auditStepperWrap {
+    margin-top: 18px;
+}
+
+.auditStepper {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.auditStep {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+
+.auditStep__dot {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    font-weight: 850;
+    font-size: 13px;
+    border: 1px solid rgba(29, 29, 29, .12);
+    background: rgba(255, 255, 255, .60);
+    color: rgba(29, 29, 29, .55);
+}
+
+.auditStep__label {
+    font-size: 11px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 650;
+}
+
+.auditStep.is-current .auditStep__dot {
+    background: var(--black);
+    color: #fff;
+    border-color: rgba(29, 29, 29, .22);
+}
+
+.auditStep.is-complete .auditStep__dot {
+    background: rgba(0, 195, 165, .95);
+    color: #08211c;
+    border-color: rgba(0, 195, 165, .30);
+}
+
+.auditStepperLine {
+    margin-top: 10px;
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(29, 29, 29, .08);
+    overflow: hidden;
+}
+
+.auditStepperLine__fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--accent-green);
+    width: 0%;
+    transition: width .25s ease;
+}
+
+/* Etapas do formulário */
+.auditPane {
+    display: none;
+}
+
+.auditPane.is-active {
+    display: block;
+}
+
+/* Hint embaixo do campo (usado no HTML do audit) */
+.field__hint {
+    display: block;
+    font-size: 12px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   RESULTADO DA AUDITORIA (layout 3 etapas)
+   Classes do index.html (resultAudit*)
+   Cole este bloco NO FINAL do seu styles.css
+========================================================= */
+
+.page--resultAudit {
+    align-items: flex-start;
+    justify-content: center;
+    padding: 42px 22px;
+}
+
+.resultAuditWrap {
+    width: min(980px, 100%);
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(29, 29, 29, .10);
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.resultAuditHeader {
+    text-align: center;
+}
+
+.resultAuditTitle {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 850;
+    letter-spacing: -0.02em;
+}
+
+.resultAuditMeta {
+    margin-top: 8px;
+    color: rgba(29, 29, 29, .55);
+    font-weight: 650;
+    font-size: 13px;
+}
+
+/* status em largura total dentro do container */
+.page--resultAudit .statusCard {
+    width: 100%;
+    margin: 0;
+}
+
+.resultGrid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 860px) {
+    .resultGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.resultPanel {
+    background: #fff;
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(29, 29, 29, .08);
+    padding: 16px;
+}
+
+.panelTitle {
+    margin: 0 0 12px;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+/* DRE (ajustes para o HTML atual) */
+.dreRow strong {
+    font-weight: 800;
+    color: rgba(29, 29, 29, .90);
+}
+
+.dreRow--strong {
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 1px solid rgba(29, 29, 29, .10);
+}
+
+.dreNeg {
+    font-weight: 850;
+    color: var(--orange-600);
+}
+
+.dreBox {
+    margin-top: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(22, 163, 74, .18);
+    background: var(--green-100);
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.dreBox__label {
+    font-weight: 900;
+}
+
+.dreBox__value {
+    font-weight: 900;
+    color: var(--green-600);
+}
+
+.dreBox__sub {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(29, 29, 29, .55);
+}
+
+/* Card final "E agora?" */
+.nextCard {
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(29, 29, 29, .10);
+    border-radius: 18px;
+    box-shadow: 0 18px 50px rgba(29, 29, 29, .08);
+    padding: 18px;
+}
+
+.nextCard__title {
+    font-weight: 900;
+    margin: 0 0 10px;
+}
+
+.nextCard__text {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(29, 29, 29, .72);
+    font-weight: 650;
+}
+
+/* Ações do resultado: 1 botão full + 2 em par */
+.page--resultAudit .resultCtas {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.ctaPair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 620px) {
+    .ctaPair {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Compat: btn--dark usado no resultado */
+.btn--dark {
+    background: var(--black);
+    color: #fff;
+    box-shadow: 0 16px 40px rgba(29, 29, 29, .20);
+}
+
+.btn--dark:hover {
+    background: #232323;
+}
+
+/* Patch: limitar largura do stepper para igualar o card (.auditCard) */
+.auditStepperWrap {
+    width: min(720px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* (Recomendado) garantir que o wrapper do conteúdo também não estique */
+.auditBody {
+    padding: 28px 22px 56px;
+}
+
+.auditBody__inner {
+    width: min(720px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== PATCH: Header do card (ícone à esquerda + título centralizado) ===== */
+.auditCard {
+    position: relative;
+}
+
+.auditCard__icon {
+    position: absolute;
+    left: 28px;
+    top: 28px;
+    margin: 0;
+    /* remove o "0 auto" que centralizava */
+}
+
+.auditCard__title {
+    /* título centralizado no container, sem ser deslocado pelo ícone */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    /* mesma altura do ícone */
+    padding: 0 72px;
+    /* reserva espaço simétrico (esq/dir) */
+}
+
+/* Botão único alinhado à direita */
+.actions--single {
+    justify-content: flex-end;
+}
+
+@media (max-width: 560px) {
+    .auditCard__icon {
+        left: 20px;
+        top: 20px;
+    }
+
+    .auditCard__title {
+        padding: 0 64px;
+    }
+}
