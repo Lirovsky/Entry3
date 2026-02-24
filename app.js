@@ -13,6 +13,64 @@
     const CONTACT_STORAGE_KEY = "ce_lead_contact_v1";
 
     // =========================================
+    // RESULT VIDEO (YouTube)
+    // =========================================
+    // Cole aqui o link do vídeo (qualquer formato: watch, youtu.be, shorts ou embed)
+    // Ex.: https://www.youtube.com/watch?v=XXXXXXXXXXX
+    const RESULT_YOUTUBE_VIDEO_URL = "https://www.youtube.com/embed/_0v2nd4bR6A?rel=0";
+
+    function toYouTubeEmbedUrl(raw) {
+        const u = String(raw || "").trim();
+        if (!u) return "";
+
+        // Se já for embed
+        if (u.includes("youtube.com/embed/")) return u;
+
+        // Se for apenas um ID
+        if (/^[a-zA-Z0-9_-]{6,}$/.test(u)) return `https://www.youtube.com/embed/${u}`;
+
+        try {
+            const url = new URL(u);
+
+            // youtu.be/ID
+            if (url.hostname.includes("youtu.be")) {
+                const id = url.pathname.split("/").filter(Boolean)[0];
+                return id ? `https://www.youtube.com/embed/${id}` : "";
+            }
+
+            if (url.hostname.includes("youtube.com")) {
+                // watch?v=ID
+                const v = url.searchParams.get("v");
+                if (v) return `https://www.youtube.com/embed/${v}`;
+
+                // /shorts/ID
+                const m = url.pathname.match(/\/shorts\/([^\/\?]+)/);
+                if (m && m[1]) return `https://www.youtube.com/embed/${m[1]}`;
+            }
+        } catch (_) { }
+
+        return "";
+    }
+
+    function initResultVideoEmbed() {
+        const iframe = $("#resultYoutubeEmbed");
+        if (!iframe) return;
+
+        const embed = toYouTubeEmbedUrl(RESULT_YOUTUBE_VIDEO_URL);
+        const card = iframe.closest ? iframe.closest(".videoCard") : null;
+
+        if (embed) {
+            iframe.src = embed;
+            if (card) card.classList.add("is-video-ready");
+        } else {
+            // mantém vazio e exibe o placeholder no HTML/CSS
+            iframe.removeAttribute("src");
+            if (card) card.classList.remove("is-video-ready");
+        }
+    }
+
+
+    // =========================================
     // STATE
     // =========================================
     const state = {
@@ -60,6 +118,194 @@
         const n = Number(d);
         return Number.isFinite(n) ? n : null;
     }
+
+    // =========================================
+    // OPEN HOURS SCHEDULE (Step 1)
+    // =========================================
+    const OPEN_HOURS_WEEKS_PER_MONTH = 4; // aproximação simples (4 semanas)
+
+    function syncOpenHoursFromSchedule() {
+        const daysEl = $("#openWeekdaysSelect");
+        const hoursEl = $("#openWeekdayHoursSelect");
+
+        // Se não existir a UI de schedule, mantém compatibilidade com o input antigo
+        if (!daysEl || !hoursEl) return parseIntSafe($("#openHoursInput")?.value);
+
+        const days = parseIntSafe(daysEl.value);
+        const hours = parseIntSafe(hoursEl.value);
+
+        const sat = parseIntSafe($("#openSatHoursSelect")?.value);
+        const sun = parseIntSafe($("#openSunHoursSelect")?.value);
+
+        let monthly = null;
+
+        if (days != null && hours != null && days > 0 && hours > 0) {
+            const weekly = (days * hours) + (sat != null ? sat : 0) + (sun != null ? sun : 0);
+            if (weekly > 0) monthly = weekly * OPEN_HOURS_WEEKS_PER_MONTH;
+        }
+
+        const hidden = $("#openHoursInput");
+        if (hidden) hidden.value = monthly == null ? "" : String(monthly);
+
+        const preview = $("#openHoursMonthlyPreview");
+        if (preview) preview.textContent = monthly == null ? "0" : String(monthly);
+
+        const result = $("#openHoursResult");
+        if (result) result.dataset.ready = monthly == null ? "0" : "1";
+
+        return monthly;
+    }
+
+
+    // =========================================
+    // TYPEWRITER (CALLOUTS)
+    // =========================================
+    const TYPEWRITER_SPEED_MS = 14; // menor = mais rápido
+    const TYPEWRITER_LIVE_IDS = new Set(["fixedHourlyCost", "procedureHoursRounded"]);
+
+    function initCalloutTypewriterSystem() {
+        $$(".callout.callout--warn .callout__text").forEach((el) => {
+            if (!el.dataset.typewriterHtml) el.dataset.typewriterHtml = el.innerHTML;
+            if (!el.dataset.typewriterTyped) el.dataset.typewriterTyped = "0";
+            if (!el.dataset.typewriterTyping) el.dataset.typewriterTyping = "0";
+        });
+
+        // Observa mudanças de "hidden" para disparar o efeito em qualquer callout verde
+        if (!initCalloutTypewriterSystem.__observer && document.body) {
+            const obs = new MutationObserver((mutations) => {
+                for (const m of mutations) {
+                    if (m.type !== "attributes" || m.attributeName !== "hidden") continue;
+                    const el = m.target;
+                    if (!(el instanceof HTMLElement)) continue;
+                    if (!el.classList.contains("callout") || !el.classList.contains("callout--warn")) continue;
+
+                    if (el.hidden) resetCalloutTypewriter(el);
+                    else maybeTypeCallout(el);
+                }
+            });
+
+            obs.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["hidden"] });
+            initCalloutTypewriterSystem.__observer = obs;
+        }
+    }
+
+    function resetCalloutTypewriter(calloutEl) {
+        const textEl = calloutEl?.querySelector?.(".callout__text");
+        if (!textEl) return;
+
+        if (!textEl.dataset.typewriterHtml) textEl.dataset.typewriterHtml = textEl.innerHTML;
+
+        if (textEl.__typewriterTimer) {
+            clearTimeout(textEl.__typewriterTimer);
+            textEl.__typewriterTimer = null;
+        }
+
+        textEl.dataset.typewriterTyping = "0";
+        textEl.dataset.typewriterTyped = "0";
+        textEl.innerHTML = textEl.dataset.typewriterHtml;
+    }
+
+    function maybeTypeCallout(calloutEl) {
+        const textEl = calloutEl?.querySelector?.(".callout__text");
+        if (!calloutEl || !textEl) return;
+        if (calloutEl.hidden) return;
+
+        if (!textEl.dataset.typewriterHtml) textEl.dataset.typewriterHtml = textEl.innerHTML;
+        if (textEl.dataset.typewriterTyped === "1" || textEl.dataset.typewriterTyping === "1") return;
+
+        runTypewriterOnElement(textEl);
+    }
+
+    function runTypewriterOnElement(textEl) {
+        if (textEl.__typewriterTimer) {
+            clearTimeout(textEl.__typewriterTimer);
+            textEl.__typewriterTimer = null;
+        }
+
+        const html = textEl.dataset.typewriterHtml ?? textEl.innerHTML;
+        textEl.dataset.typewriterHtml = html;
+        textEl.dataset.typewriterTyping = "1";
+        textEl.dataset.typewriterTyped = "0";
+
+        const template = document.createElement("template");
+        template.innerHTML = html;
+
+        const pairs = [];
+
+        function cloneNode(src, parentIsLive) {
+            if (!src) return null;
+
+            if (src.nodeType === Node.TEXT_NODE) {
+                const full = src.textContent || "";
+                const tn = document.createTextNode(parentIsLive ? full : "");
+                if (!parentIsLive && full.length) pairs.push({ node: tn, text: full });
+                return tn;
+            }
+
+            if (src.nodeType === Node.ELEMENT_NODE) {
+                const el = document.createElement(src.tagName.toLowerCase());
+
+                for (const attr of Array.from(src.attributes || [])) {
+                    el.setAttribute(attr.name, attr.value);
+                }
+
+                const isLive = !!(parentIsLive || (src.id && TYPEWRITER_LIVE_IDS.has(src.id)));
+
+                for (const child of Array.from(src.childNodes || [])) {
+                    const c = cloneNode(child, isLive);
+                    if (c) el.appendChild(c);
+                }
+
+                return el;
+            }
+
+            return null;
+        }
+
+        // Mantém a mesma estrutura HTML e “digita” somente os textos
+        textEl.innerHTML = "";
+        for (const child of Array.from(template.content.childNodes)) {
+            const c = cloneNode(child, false);
+            if (c) textEl.appendChild(c);
+        }
+
+        let nodeIndex = 0;
+        let charIndex = 0;
+
+        const tick = () => {
+            if (nodeIndex >= pairs.length) {
+                textEl.dataset.typewriterTyping = "0";
+                textEl.dataset.typewriterTyped = "1";
+                textEl.__typewriterTimer = null;
+                return;
+            }
+
+            const current = pairs[nodeIndex];
+            const full = current.text || "";
+
+            if (!full.length) {
+                nodeIndex += 1;
+                charIndex = 0;
+                textEl.__typewriterTimer = setTimeout(tick, TYPEWRITER_SPEED_MS);
+                return;
+            }
+
+            current.node.textContent = full.slice(0, charIndex + 1);
+            charIndex += 1;
+
+            if (charIndex >= full.length) {
+                nodeIndex += 1;
+                charIndex = 0;
+            }
+
+            textEl.__typewriterTimer = setTimeout(tick, TYPEWRITER_SPEED_MS);
+        };
+
+        tick();
+    }
+
+
+
 
     function parseBRNumber(raw) {
         const s = String(raw || "").trim();
@@ -519,7 +765,7 @@
     // =========================================
     function readAuditInputs() {
         state.fixedCostMonthly = parseBRNumber($("#fixedCostInput")?.value);
-        state.openHoursMonthly = parseIntSafe($("#openHoursInput")?.value);
+        state.openHoursMonthly = syncOpenHoursFromSchedule();
 
         state.procedureName = String($("#procedureNameInput")?.value || "").trim();
         state.procedurePrice = parseBRNumber($("#procedurePriceInput")?.value);
@@ -580,6 +826,20 @@
             const mins = Number(state.procedureMinutes || 0);
             const hr = mins > 0 ? Math.ceil(mins / 60) : 1;
             hoursRounded.textContent = String(hr);
+        }
+
+        // Typewriter nas dicas verdes (callouts)
+        if (fixedCallout) {
+            if (!ok1) resetCalloutTypewriter(fixedCallout);
+            else maybeTypeCallout(fixedCallout);
+        }
+        if (procedureCallout) {
+            if (!ok2) resetCalloutTypewriter(procedureCallout);
+            else maybeTypeCallout(procedureCallout);
+        }
+        if (variablesCallout) {
+            if (!ok3) resetCalloutTypewriter(variablesCallout);
+            else maybeTypeCallout(variablesCallout);
         }
 
         return { ok1, ok2, ok3 };
@@ -840,7 +1100,10 @@
         const e = $("#preEmailInput");
 
         if (n && !String(n.value || "").trim() && state.leadName) n.value = state.leadName;
-        if (p && !String(p.value || "").trim() && state.leadPhone) p.value = state.leadPhone;
+        if (p && !String(p.value || "").trim() && state.leadPhone) {
+            p.value = state.leadPhone;
+            formatPhoneFieldInPlace(p);
+        }
         if (e && !String(e.value || "").trim() && state.leadEmail) e.value = state.leadEmail;
     }
 
@@ -1009,7 +1272,10 @@
         const e = $("#emailInput");
 
         if (n && !String(n.value || "").trim() && state.leadName) n.value = state.leadName;
-        if (p && !String(p.value || "").trim() && state.leadPhone) p.value = state.leadPhone;
+        if (p && !String(p.value || "").trim() && state.leadPhone) {
+            p.value = state.leadPhone;
+            formatPhoneFieldInPlace(p);
+        }
         if (e && !String(e.value || "").trim() && state.leadEmail) e.value = state.leadEmail;
     }
 
@@ -1128,7 +1394,7 @@
         awaitTimer = setTimeout(() => {
             updateResultUI();
             setActiveView("result");
-        }, 900);
+        }, 2000);
     }
 
     // =========================================
@@ -1136,10 +1402,15 @@
     // =========================================
     $("#fixedCostInput")?.addEventListener("input", validateAuditSteps);
 
-    $("#openHoursInput")?.addEventListener("input", (e) => {
-        e.target.value = onlyDigits(e.target.value).slice(0, 5);
+    function onOpenHoursScheduleChange() {
         validateAuditSteps();
-    });
+    }
+
+    $("#openWeekdaysSelect")?.addEventListener("change", onOpenHoursScheduleChange);
+    $("#openWeekdayHoursSelect")?.addEventListener("change", onOpenHoursScheduleChange);
+    $("#openSatHoursSelect")?.addEventListener("change", onOpenHoursScheduleChange);
+    $("#openSunHoursSelect")?.addEventListener("change", onOpenHoursScheduleChange);
+
 
     $("#procedureNameInput")?.addEventListener("input", validateAuditSteps);
     $("#procedurePriceInput")?.addEventListener("input", validateAuditSteps);
@@ -1271,6 +1542,99 @@
         else if (preResultModal && !preResultModal.hidden) closePreResultModal();
     });
 
+
+    // =========================================
+    // ENTER TO ADVANCE (wizard + modais)
+    // =========================================
+    function isEditableTarget(el) {
+        if (!el) return false;
+        const tag = String(el.tagName || "").toUpperCase();
+        return tag === "TEXTAREA" || !!el.isContentEditable;
+    }
+
+    function safeRequestSubmit(formEl, fallbackBtnSel) {
+        if (!formEl) return;
+        if (typeof formEl.requestSubmit === "function") {
+            formEl.requestSubmit();
+            return;
+        }
+        const btn = fallbackBtnSel ? $(fallbackBtnSel) : null;
+        if (btn) btn.click();
+    }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        if (e.defaultPrevented) return; // ex.: customSelect usa Enter para abrir/selecionar
+        if (e.isComposing) return;
+
+        const active = document.activeElement;
+        if (isEditableTarget(active)) return;
+
+        // Modal: falar com especialista
+        if (specialistModal && !specialistModal.hidden) {
+            const v = validateSpecialistForm();
+
+            if (specialistStepIndex === 1) {
+                if (!v.okStep1) return;
+                e.preventDefault();
+                setSpecialistStep(2);
+                return;
+            }
+
+            if (specialistStepIndex === 2) {
+                if (!(v.okStep1 && v.okStep2)) return;
+                e.preventDefault();
+                setSpecialistStep(3);
+                return;
+            }
+
+            if (specialistStepIndex === 3) {
+                if (!(v.okStep1 && v.okStep2 && v.okStep3)) return;
+                e.preventDefault();
+                safeRequestSubmit(specialistForm, "#qualifySubmitBtn");
+                return;
+            }
+
+            return;
+        }
+
+        // Modal: desbloquear resultado
+        if (preResultModal && !preResultModal.hidden) {
+            const v = validatePreResultForm();
+            if (!(v.okName && v.okPhone && v.okEmail)) return;
+            e.preventDefault();
+            safeRequestSubmit(preResultFormShort, "#preResultSubmitBtn");
+            return;
+        }
+
+        // Wizard da auditoria
+        const auditView = $('[data-view="audit"]');
+        if (!auditView || !auditView.classList.contains("is-active")) return;
+
+        const v = validateAuditSteps();
+
+        if (auditStepIndex === 1) {
+            if (!v.ok1) return;
+            e.preventDefault();
+            $("#auditNext1")?.click();
+            return;
+        }
+
+        if (auditStepIndex === 2) {
+            if (!v.ok2) return;
+            e.preventDefault();
+            $("#auditNext2")?.click();
+            return;
+        }
+
+        if (auditStepIndex === 3) {
+            if (!v.ok3) return;
+            e.preventDefault();
+            $("#auditToUnlock")?.click();
+            return;
+        }
+    });
+
     // =========================================
     // INPUT LISTENERS (MODAIS)
     // =========================================
@@ -1279,65 +1643,97 @@
     $("#nameInput")?.addEventListener("input", validateSpecialistForm);
     $("#emailInput")?.addEventListener("input", validateSpecialistForm);
 
-    function bindPhoneInputHardLimit(inputEl, validateFn) {
+    function formatPhoneBRDisplay(digits) {
+        const d = onlyDigits(digits).replace(/^0+/, "").slice(0, 11);
+        if (!d) return "";
+
+        if (d.length <= 2) return "(" + d;
+
+        const ddd = d.slice(0, 2);
+        const tail = d.slice(2);
+
+        // (DD)
+        if (!tail) return `(${ddd})`;
+
+        // (DD) X...
+        if (d.length <= 6) return `(${ddd}) ${tail}`;
+
+        // 10 dígitos (DD + 8): (DD) XXXX-XXXX
+        if (d.length <= 10) {
+            const a = tail.slice(0, 4);
+            const b = tail.slice(4);
+            return b ? `(${ddd}) ${a}-${b}` : `(${ddd}) ${a}`;
+        }
+
+        // 11 dígitos (DD + 9 + 8): (DD) 9 XXXX-XXXX
+        const nine = tail.slice(0, 1);
+        const mid = tail.slice(1, 5);
+        const end = tail.slice(5);
+        let out = `(${ddd}) ${nine}`;
+        if (mid) out += ` ${mid}`;
+        if (end) out += `-${end}`;
+        return out;
+    }
+
+    function caretPosFromDigitIndex(formatted, digitIndex) {
+        if (!formatted) return 0;
+        const target = Math.max(0, Number(digitIndex) || 0);
+        if (target === 0) return 0;
+
+        let count = 0;
+        for (let i = 0; i < formatted.length; i++) {
+            if (/\d/.test(formatted[i])) count += 1;
+            if (count >= target) return i + 1;
+        }
+        return formatted.length;
+    }
+
+    function formatPhoneFieldInPlace(inputEl) {
+        if (!inputEl) return;
+        const digits = normalizePhoneBRNational(inputEl.value || "").slice(0, 11);
+        inputEl.value = formatPhoneBRDisplay(digits);
+    }
+
+    function bindPhoneInputMask(inputEl, validateFn) {
         if (!inputEl) return;
 
         try {
-            inputEl.setAttribute("maxlength", "11");
             inputEl.setAttribute("inputmode", "numeric");
             inputEl.setAttribute("autocomplete", "tel");
-            inputEl.setAttribute("pattern", "[0-9]*");
         } catch (_) { }
 
-        let lastValue = normalizePhoneBRNational(inputEl.value || "");
-        if (lastValue.length > 11) lastValue = lastValue.slice(0, 11);
-        inputEl.value = lastValue;
+        // deixa o maxlength alto (a máscara tem símbolos)
+        try { inputEl.setAttribute("maxlength", "20"); } catch (_) { }
 
-        const getSel = () => {
-            const v = String(inputEl.value || "");
-            const s = inputEl.selectionStart == null ? v.length : inputEl.selectionStart;
-            const e = inputEl.selectionEnd == null ? v.length : inputEl.selectionEnd;
-            return { start: s, end: e, selected: Math.max(0, e - s) };
+        const update = (preserveCaret) => {
+            const prev = String(inputEl.value || "");
+            const selStart = inputEl.selectionStart == null ? prev.length : inputEl.selectionStart;
+
+            let digitsBefore = preserveCaret ? onlyDigits(prev.slice(0, selStart)).length : null;
+
+            const digits = normalizePhoneBRNational(prev).slice(0, 11);
+            const formatted = formatPhoneBRDisplay(digits);
+
+            inputEl.value = formatted;
+
+            if (preserveCaret && digitsBefore != null) {
+                const capped = Math.min(digitsBefore, digits.length);
+                const caret = caretPosFromDigitIndex(formatted, capped);
+                try { inputEl.setSelectionRange(caret, caret); } catch (_) { }
+            }
+
+            if (typeof validateFn === "function") validateFn();
         };
 
-        inputEl.addEventListener("beforeinput", (ev) => {
-            const type = String(ev.inputType || "");
-            if (!type.startsWith("insert")) return;
-            if (type === "insertFromPaste") return;
+        inputEl.addEventListener("input", () => update(true));
+        inputEl.addEventListener("blur", () => update(false));
 
-            const current = normalizePhoneBRNational(inputEl.value || "");
-            const { selected } = getSel();
-
-            const insertDigits = onlyDigits(ev.data || "").length;
-            const nextLen = current.length - selected + insertDigits;
-
-            if (nextLen > 11) ev.preventDefault();
-        });
-
-        inputEl.addEventListener("paste", (ev) => {
-            const text = (ev.clipboardData || window.clipboardData)?.getData("text") || "";
-            const insert = normalizePhoneBRNational(text || "");
-            const current = normalizePhoneBRNational(inputEl.value || "");
-            const { selected } = getSel();
-
-            const nextLen = current.length - selected + insert.length;
-            if (nextLen > 11) ev.preventDefault();
-        });
-
-        inputEl.addEventListener("input", () => {
-            const cleaned = normalizePhoneBRNational(inputEl.value || "");
-            if (cleaned.length > 11) {
-                inputEl.value = lastValue;
-            } else {
-                inputEl.value = cleaned;
-                lastValue = cleaned;
-            }
-            if (typeof validateFn === "function") validateFn();
-        });
+        // formata valor inicial (se já existir)
+        update(false);
     }
 
-    bindPhoneInputHardLimit($("#prePhoneInput"), validatePreResultForm);
-    bindPhoneInputHardLimit($("#phoneInput"), validateSpecialistForm);
+    bindPhoneInputMask($("#prePhoneInput"), validatePreResultForm);
+    bindPhoneInputMask($("#phoneInput"), validateSpecialistForm);
 
     $("#areaInput")?.addEventListener("change", validateSpecialistForm);
     $("#teamSizeInput")?.addEventListener("change", validateSpecialistForm);
@@ -1449,7 +1845,11 @@
 
             btn.addEventListener("click", toggle);
             btn.addEventListener("keydown", (e) => {
-                if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                // Enter serve para avançar etapas quando o select já tem valor.
+                // Para reabrir o menu, use ArrowDown ou Espaço.
+                if (e.key === "ArrowDown" || e.key === " " || e.key === "Enter") {
+                    const hasValue = !!String(sel.value || "").trim();
+                    if (e.key === "Enter" && hasValue) return; // deixa o Enter propagar (wizard)
                     e.preventDefault();
                     open();
                 }
@@ -1509,7 +1909,9 @@
     // =========================================
     // INIT
     // =========================================
+    initCalloutTypewriterSystem();
     initCustomSelects();
+    initResultVideoEmbed();
     updateAuditStepper(1);
     setAuditStep(1);
     validateAuditSteps();

@@ -73,10 +73,77 @@
 
                                 <label class="field">
                                     <span class="field__label">Quantas horas por mês a clínica fica aberta?</span>
-                                    <div class="inputSuffix">
-                                        <input class="input input--suffix" id="openHoursInput" inputmode="numeric"
-                                            placeholder="160" />
+
+                                    <div class="hoursSchedule" aria-label="Horário de funcionamento">
+                                        <div class="hoursSchedule__row">
+                                            <div class="hoursSchedule__tag">Seg–Sex</div>
+                                            <div class="hoursSchedule__grid">
+                                                <select class="select" id="openWeekdaysSelect"
+                                                    aria-label="Dias por semana (Segunda a Sexta)">
+                                                    <option value="">Dias</option>
+                                                    <option value="1">1 dia</option>
+                                                    <option value="2">2 dias</option>
+                                                    <option value="3">3 dias</option>
+                                                    <option value="4">4 dias</option>
+                                                    <option value="5" selected>5 dias</option>
+                                                </select>
+
+                                                <select class="select" id="openWeekdayHoursSelect"
+                                                    aria-label="Horas por dia (Segunda a Sexta)">
+                                                    <option value="">Horas/dia</option>
+                                                    <option value="4">4h</option>
+                                                    <option value="5">5h</option>
+                                                    <option value="6">6h</option>
+                                                    <option value="7">7h</option>
+                                                    <option value="8" selected>8h</option>
+                                                    <option value="9">9h</option>
+                                                    <option value="10">10h</option>
+                                                    <option value="12">12h</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="hoursSchedule__row">
+                                            <div class="hoursSchedule__tag">Sábado</div>
+                                            <div class="hoursSchedule__grid hoursSchedule__grid--single">
+                                                <select class="select" id="openSatHoursSelect"
+                                                    aria-label="Horas no sábado">
+                                                    <option value="0" selected>Fechado</option>
+                                                    <option value="3">3h</option>
+                                                    <option value="4">4h</option>
+                                                    <option value="5">5h</option>
+                                                    <option value="6">6h</option>
+                                                    <option value="8">8h</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="hoursSchedule__row">
+                                            <div class="hoursSchedule__tag">Domingo</div>
+                                            <div class="hoursSchedule__grid hoursSchedule__grid--single">
+                                                <select class="select" id="openSunHoursSelect"
+                                                    aria-label="Horas no domingo">
+                                                    <option value="0" selected>Fechado</option>
+                                                    <option value="3">3h</option>
+                                                    <option value="4">4h</option>
+                                                    <option value="5">5h</option>
+                                                    <option value="6">6h</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="hoursSchedule__result" id="openHoursResult" aria-live="polite">
+                                            ≈ <strong id="openHoursMonthlyPreview">0</strong> horas/mês
+                                            <span class="hoursSchedule__meta">Cálculo aproximado com base em 4 semanas
+                                                por mês.</span>
+                                        </div>
                                     </div>
+
+                                    <span class="field__hint">Selecione os dias e as horas, e a gente calcula
+                                        automaticamente.</span>
+
+                                    <!-- Mantido para compatibilidade com o JS (valor calculado) -->
+                                    <input type="hidden" id="openHoursInput" value="" />
                                 </label>
 
                                 <div class="callout callout--warn" id="fixedCallout" hidden>
@@ -284,6 +351,36 @@
                         </div>
                     </div>
 
+
+                    <div class="videoCard" id="resultVideoCard">
+                        <!-- <div class="videoCard__title">Antes do “E agora?”</div> -->
+                        <p class="videoCard__text">
+                            Você acabou de transformar “achismo” em números. O próximo passo é usar esse resultado para
+                            tomar decisões
+                            sem cair no erro mais comum: subir preço no susto ou cortar custo no lugar errado.
+                            <br><br>
+                            No vídeo abaixo, eu te mostro um caminho prático para aumentar <strong>percepção de
+                                valor</strong> e reduzir
+                            <strong>custo operacional</strong> sem perder vendas — e como um sistema de gestão faz isso
+                            acontecer no dia a dia.
+                        </p>
+
+                        <div class="videoEmbed" aria-label="Vídeo explicativo">
+                            <iframe id="resultYoutubeEmbed" title="Vídeo explicativo" src="" loading="lazy"
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe>
+                            <div class="videoEmpty" id="resultVideoEmpty" aria-hidden="true"></div>
+                        </div>
+                        <!--
+                        <div class="videoCard__foot">
+                            Dica: depois de assistir, volte aqui e compare o impacto de <strong>1 ajuste por
+                                vez</strong>.
+                            É assim que você encontra o ponto ideal sem “chutar” preço.
+                        </div>
+                    -->
+                    </div>
+
                     <div class="nextCard">
                         <div class="nextCard__title">💡 E agora?</div>
                         <p class="nextCard__text">Aumentar o preço assusta, eu sei. Mas existem formas de aumentar a
@@ -302,6 +399,10 @@
                                     Fale com um especialista
                                 </button>
                             </div>
+
+                            <button class="btn btn--outline btn--lg btn--block" id="simulateBtn" type="button">
+                                Refazer auditoria
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -336,8 +437,10 @@
 
                     <label class="field">
                         <span class="field__label">WhatsApp</span>
-                        <input class="input" id="prePhoneInput" inputmode="numeric" maxlength="11" pattern="[0-9]*"
-                            autocomplete="tel" placeholder="Ex.: 51999999999" />
+                        <div class="phone">
+                            <div class="phone__prefix">+55</div><input class="input input--phone" id="prePhoneInput"
+                                inputmode="numeric" autocomplete="tel" placeholder="(51) 9 9999-9999" />
+                        </div>
                     </label>
 
                     <label class="field">
@@ -492,8 +595,10 @@
 
                         <label class="field">
                             <span class="field__label">WhatsApp</span>
-                            <input class="input" id="phoneInput" inputmode="numeric" maxlength="11" pattern="[0-9]*"
-                                autocomplete="tel" placeholder="Ex.: 51999999999" />
+                            <div class="phone">
+                                <div class="phone__prefix">+55</div><input class="input input--phone" id="phoneInput"
+                                    inputmode="numeric" autocomplete="tel" placeholder="(51) 9 9999-9999" />
+                            </div>
                         </label>
 
                         <label class="field">
