@@ -11,18 +11,42 @@
 <body>
     <main class="app">
 
-        <!-- AUDITORIA (wizard) -->
-        <section class="view is-active" data-view="audit" aria-hidden="false">
-            <header class="auditHero" role="banner">
-                <div class="auditHero__inner">
-                    <h1 class="auditHero__title">Auditoria de Precificação</h1>
-                    <div class="auditHero__subtitle">Você tem <strong>Lucro</strong> ou <strong>Ilusão</strong>?</div>
-                    <p class="auditHero__desc">Descubra a margem real do seu principal procedimento e o preço exato que
-                        você
-                        deveria cobrar.</p>
-                </div>
-            </header>
+        <!-- HOME (landing) -->
+        <section class="view is-active" data-view="home" aria-hidden="false">
+            <div class="page page--hero page--wide">
+                <div class="heroSplit heroSplit--center">
+                    <div class="heroCopy">
+                        <img class="brandMark" src="logoo.svg" alt="Clínica Experts">
 
+                        <div class="heroKicker" aria-label="Categoria">
+                            <span class="heroKicker__spark" aria-hidden="true">✦</span>
+                            Auditoria de Precificação
+                        </div>
+
+                        <h1 class="heroTitle">
+                            <span class="heroTitle__strong">Você tem <span class="heroTitle__green">Lucro</span> ou
+                                <span class="heroTitle__red">Ilusão?</span>
+                        </h1>
+
+                        <p class="heroDesc">Descubra a margem real do seu principal procedimento e o preço exato que
+                            você deveria cobrar.</p>
+
+                        <div class="heroCtas">
+                            <button class="btn btn--primary btn--lg" id="startAuditBtn" type="button">
+                                Iniciar Auditoria <span class="btn__arrow" aria-hidden="true">→</span>
+                            </button>
+                        </div>
+
+                        <div class="heroMeta" aria-label="Informações">
+                            <div class="heroMeta__muted">Gratuito • 2 minutos • Resultado imediato</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUDITORIA (wizard) -->
+        <section class="view" data-view="audit" aria-hidden="true">
             <div class="auditBody">
                 <div class="auditBody__inner">
                     <div class="auditStepperWrap" aria-label="Progresso">

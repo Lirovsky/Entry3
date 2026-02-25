@@ -908,6 +908,9 @@
     }
 
     function focusAuditStep(n) {
+        const auditView = $('[data-view="audit"]');
+        if (!auditView || !auditView.classList.contains('is-active')) return;
+
         const map = {
             1: "#fixedCostInput",
             2: "#procedureNameInput",
@@ -1460,6 +1463,11 @@
     // =========================================
     // RESULT ACTIONS
     // =========================================
+    $("#startAuditBtn")?.addEventListener("click", () => {
+        setActiveView("audit");
+        resetAuditForm();
+    });
+
     $("#simulateBtn")?.addEventListener("click", () => {
         resetAuditForm();
         setActiveView("audit");
@@ -1917,7 +1925,11 @@
     validateAuditSteps();
 
     // garante estado inicial coerente com o HTML
-    if ($('[data-view="audit"]') && $('[data-view="audit"]').classList.contains("is-active")) {
-        setActiveView("audit");
-    }
+    const homeView = $('[data-view="home"]');
+    const auditView = $('[data-view="audit"]');
+
+    if (homeView && homeView.classList.contains("is-active")) setActiveView("home");
+    else if (auditView && auditView.classList.contains("is-active")) setActiveView("audit");
+    else if (homeView) setActiveView("home");
+    else setActiveView("audit");
 })();

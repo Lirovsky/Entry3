@@ -37,6 +37,7 @@
     --green-600: #16a34a;
     --green-100: rgba(22, 163, 74, .10);
     --red-600: #dc2626;
+    --red-500: #e34242;
     --red-100: rgba(220, 38, 38, .10);
 }
 
@@ -223,6 +224,19 @@ body {
    HERO (antigo)
 ========================================================= */
 
+.brandMark {
+    width: min(240px, 92vw);
+    height: auto;
+    display: block;
+    margin: 0 auto 12px;
+    padding-bottom: 20px;
+}
+
+.logo {
+    width: 240px;
+    margin-bottom: 20px;
+}
+
 .heroSplit {
     width: 100%;
     max-width: var(--page-max);
@@ -273,6 +287,7 @@ body {
     border: 1px solid rgba(29, 29, 29, .08);
     display: grid;
     place-items: center;
+    margin-top: -2px;
 }
 
 .heroTitle {
@@ -289,7 +304,17 @@ body {
 
 .heroTitle__strong {
     color: var(--black);
-    font-weight: 850;
+    font-weight: 700;
+}
+
+.heroTitle__green {
+    color: var(--accent-green);
+    font-weight: 700;
+}
+
+.heroTitle__red {
+    color: var(--red-500);
+    font-weight: 700;
 }
 
 .heroDesc {
@@ -2122,7 +2147,7 @@ button {
 
 /* (Recomendado) garantir que o wrapper do conteúdo também não estique */
 .auditBody {
-    padding: 28px 22px 56px;
+    padding: 46px 22px 56px;
 }
 
 .auditBody__inner {
