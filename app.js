@@ -69,6 +69,77 @@
         }
     }
 
+    // =========================================
+    // RESULT VIDEO (Fullscreen overlay fallback)
+    // =========================================
+    const videoExpandBtn = $("#videoExpandBtn");
+    const videoOverlay = $("#videoOverlay");
+    const videoOverlayEmbed = $("#videoOverlayEmbed");
+    const videoOverlayCloseBtn = $("#videoOverlayCloseBtn");
+    let lastFocusElVideo = null;
+
+    function buildAutoplayEmbedSrc(src) {
+        const raw = String(src || "").trim();
+        if (!raw) return "";
+        try {
+            const url = new URL(raw, window.location.href);
+            url.searchParams.set("autoplay", "1");
+            if (!url.searchParams.has("rel")) url.searchParams.set("rel", "0");
+            return url.toString();
+        } catch (_) {
+            if (raw.includes("autoplay=")) return raw;
+            return raw + (raw.includes("?") ? "&" : "?") + "autoplay=1";
+        }
+    }
+
+    function openVideoOverlay() {
+        const base = $("#resultYoutubeEmbed");
+        if (!videoOverlay || !videoOverlayEmbed || !base) return;
+
+        const src = base.getAttribute("src") || base.src || "";
+        if (!String(src).trim()) return;
+
+        lastFocusElVideo = document.activeElement;
+
+        videoOverlayEmbed.src = buildAutoplayEmbedSrc(src);
+        videoOverlay.hidden = false;
+        videoOverlay.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+
+        const fsTarget = videoOverlay.querySelector(".videoOverlay__inner") || videoOverlay;
+        try {
+            if (fsTarget.requestFullscreen) fsTarget.requestFullscreen();
+        } catch (_) { }
+    }
+
+    function closeVideoOverlay() {
+        if (!videoOverlay || !videoOverlayEmbed) return;
+
+        videoOverlay.hidden = true;
+        videoOverlay.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+
+        // Para o vídeo (remove src)
+        videoOverlayEmbed.removeAttribute("src");
+
+        try {
+            if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+        } catch (_) { }
+
+        if (lastFocusElVideo && typeof lastFocusElVideo.focus === "function") {
+            try { lastFocusElVideo.focus(); } catch (_) { }
+        }
+    }
+
+    function initVideoOverlay() {
+        videoExpandBtn?.addEventListener("click", openVideoOverlay);
+        videoOverlayCloseBtn?.addEventListener("click", closeVideoOverlay);
+
+        videoOverlay?.addEventListener("click", (e) => {
+            if (e.target === videoOverlay) closeVideoOverlay();
+        });
+    }
+
 
     // =========================================
     // STATE
@@ -1397,7 +1468,7 @@
         awaitTimer = setTimeout(() => {
             updateResultUI();
             setActiveView("result");
-        }, 2000);
+        }, 4000);
     }
 
     // =========================================
@@ -1546,7 +1617,8 @@
 
     document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
-        if (specialistModal && !specialistModal.hidden) closeSpecialistModal();
+        if (videoOverlay && !videoOverlay.hidden) closeVideoOverlay();
+        else if (specialistModal && !specialistModal.hidden) closeSpecialistModal();
         else if (preResultModal && !preResultModal.hidden) closePreResultModal();
     });
 
@@ -1920,6 +1992,7 @@
     initCalloutTypewriterSystem();
     initCustomSelects();
     initResultVideoEmbed();
+    initVideoOverlay();
     updateAuditStepper(1);
     setAuditStep(1);
     validateAuditSteps();

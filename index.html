@@ -33,7 +33,7 @@
 
                         <div class="heroCtas">
                             <button class="btn btn--primary btn--lg" id="startAuditBtn" type="button">
-                                Iniciar Auditoria <span class="btn__arrow" aria-hidden="true">→</span>
+                                Iniciar Auditoria
                             </button>
                         </div>
 
@@ -394,6 +394,10 @@
                                 referrerpolicy="strict-origin-when-cross-origin"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowfullscreen></iframe>
+                            <button class="videoExpandBtn" id="videoExpandBtn" type="button"
+                                aria-label="Expandir vídeo">
+                                ⤢
+                            </button>
                             <div class="videoEmpty" id="resultVideoEmpty" aria-hidden="true"></div>
                         </div>
                         <!--
@@ -641,6 +645,20 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- VIDEO OVERLAY (fullscreen fallback para mobile) -->
+        <div class="videoOverlay" id="videoOverlay" hidden aria-hidden="true">
+            <div class="videoOverlay__inner" role="dialog" aria-modal="true" aria-label="Vídeo em tela cheia">
+                <button class="videoOverlay__close" id="videoOverlayCloseBtn" type="button" aria-label="Fechar vídeo">
+                    ×
+                </button>
+
+                <iframe id="videoOverlayEmbed" title="Vídeo em tela cheia" src="" loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
             </div>
         </div>
 
